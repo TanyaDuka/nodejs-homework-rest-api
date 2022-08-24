@@ -4,21 +4,23 @@ const router = express.Router()
 
 const ctrl = require('../../controllers/contacts');
 const { ctrlWrapper } = require('../../helpers');
+const { validationBody, isValidId } = require('../../middleware');
+const { schemaJoi } = require('../../models/contact');
+const validationMiddlewareAdd = validationBody(schemaJoi.addSchema);
+const validationMiddlewareUpdate =validationBody(schemaJoi.updateSchema);
 
-
-const validationBody    = require('../../middleware');
-const { schema } = require('../../schemas');
-console.log(schema.add);
- const validationMiddleware =validationBody(schema.add);
 
 router.get('/', ctrlWrapper(ctrl.getAllContacts) )
   
-router.get('/:contactId',ctrlWrapper(ctrl.getContactById))
+router.get('/:contactId',isValidId, ctrlWrapper(ctrl.getContactById))
 
-router.post('/',validationMiddleware, ctrlWrapper(ctrl.addContact))
+router.post('/',validationMiddlewareAdd, ctrlWrapper(ctrl.addContact))
 
-router.delete('/:contactId', ctrlWrapper(ctrl.deleteContact))
+router.delete('/:contactId', isValidId, ctrlWrapper(ctrl.deleteContact))
 
-router.put('/:contactId', validationMiddleware, ctrlWrapper(ctrl.updateContact))
+router.put('/:contactId', isValidId, validationMiddlewareAdd, ctrlWrapper(ctrl.updateContact))
+
+router.patch('/:contactId/favorite', isValidId, validationMiddlewareUpdate, ctrlWrapper(ctrl.updateStatusContact))
+
 
 module.exports = router
