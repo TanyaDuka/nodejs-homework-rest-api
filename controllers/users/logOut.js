@@ -6,9 +6,12 @@ const logOut = async (req, res, next) => {
     
     await User.findByIdAndUpdate(_id, { token: "" });
 
-    res.status(204).res.json({
-         message: "No Content"
+    res.status(204).json({
+         message: "No Content",
+        
     })
+    
+
 }
 
 module.exports = logOut;
