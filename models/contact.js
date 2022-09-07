@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 const {handlerSchemaValidationError} =require('../helpers')
 
-const contactSchema = Schema({
+const contactSchema = new Schema({
     name: {
       type: String,
       required: [true, 'Set name for contact'],
@@ -17,7 +17,11 @@ const contactSchema = Schema({
     favorite: {
       type: Boolean,
       default: false,
-    },
+  },
+        owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    }
 }, { versionKey: false, timestamps: true })
 
 contactSchema.post('save', handlerSchemaValidationError);
@@ -25,7 +29,7 @@ contactSchema.post('save', handlerSchemaValidationError);
 const contactSchemaJoiAdd = Joi.object({
       name: Joi.string().min(3).max(50).required(),
       email: Joi.string().email(),
-    phone: Joi.number().required(),
+      phone: Joi.number().required(),
       favorite:Joi.boolean()
 });
 
