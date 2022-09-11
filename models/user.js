@@ -24,6 +24,10 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
+  avatarURL:{
+    type: String,
+    required:true
+  }
 }, {versionKey: false, timestamps: true })
 
 
@@ -32,7 +36,7 @@ userSchema.post('save', handlerSchemaValidationError);
 const singUpSchemaJoi = Joi.object({
     email: Joi.string().pattern(emailRegexp).required(),
     password: Joi.string().min(6).required(),
-    repeat_password: Joi.ref("password"),
+    repeat_password: Joi.string().required().valid(Joi.ref('password')),
 })
 
 const loginSchemaJoi = Joi.object({
@@ -48,7 +52,7 @@ const User = model('user', userSchema);
 
 const schemaJoi = {
     singUpSchema: singUpSchemaJoi,
-  loginSchema: loginSchemaJoi,
+    loginSchema: loginSchemaJoi,
     updateSubscription:contactSchemaJoiUpdateSubscription
 }
 
